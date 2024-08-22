@@ -56,6 +56,10 @@ ROOT_URLCONF = 'project.urls'
 # settings.py
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'home'
+
+
+AUTH_USER_MODEL = 'onlinecommerceApp.Usuario'
 
 
 TEMPLATES = [
@@ -83,7 +87,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'onlinecommerce',
+        'NAME': 'onlinecommercepy',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',
