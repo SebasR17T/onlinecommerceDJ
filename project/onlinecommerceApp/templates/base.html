@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,8 +14,39 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+
 </head>
 <body>
+
+<div class="navbar">
+    <div class="logo"><img src="{% static 'img/Logo.png' %}" width="60px" height="50px"></div>
+
+
+    <!--Barra Busqueda-->
+    <div class="search">
+        <input placeholder="Search..." type="text" id="termino-busqueda">
+        <button type="submit">Buscar</button>
+      </div>
+
+   <div class="button-container">
+    <button class="button" style="width: 80px; height: 80px;">
+        <img src="{% static 'img/casa.png' %}" style="width: 40px; height: 40px;">
+    </button>
+
+    <button class="button" style="width: 80px; height: 80px;">
+        <img src="{% static 'img/usuario.png' %}" style="width: 40px; height: 40px;">
+    </button>
+
+    <button class="button" style="width: 80px; height: 80px;">
+        <img src="{% static 'img/carrito.png' %}" style="width: 40px; height: 40px;">
+    </button>
+</div>
+
+
+</div>
+
+
     <div class="container mt-5">
         {% block content %}{% endblock %}
     </div>
@@ -21,5 +54,15 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<footer class="page padding trim" style="margin-top: 20px;">
+        <div class="type">
+            <p class="text-center">© 2021 Online Commerce. Todos los derechos reservados.</p>
+            <p class="text-center">Calle Principal 123, Ciudad, Estado</p>
+            <p class="text-center">Teléfono: 123-456-7890</p>
+            <p class="text-center">Correo electrónico: info@onlinecommerce.com</p>
+        </div>
+ </footer>
+
 </body>
 </html>

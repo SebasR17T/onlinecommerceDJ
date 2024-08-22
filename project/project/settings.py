@@ -61,6 +61,8 @@ LOGIN_REDIRECT_URL = 'home'
 
 AUTH_USER_MODEL = 'onlinecommerceApp.Usuario'
 
+STATIC_URL = '/static/'
+
 
 TEMPLATES = [
     {

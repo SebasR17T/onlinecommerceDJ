@@ -2,7 +2,10 @@ from django.contrib.auth import login
 from django.contrib.auth.models import Group
 from .forms import CrearUsuarioForm
 from .models import Usuario
+from django.views.generic import TemplateView
 
+class DashboardView(TemplateView):
+    template_name = 'dashboard.html'
 def register(request):
 
     if request.method == 'POST': # Verifica si la solicitud es de tipo POST
@@ -20,7 +23,7 @@ def register(request):
                 user.groups.add(group) # Añade el usuario al grupo correspondiente
 
             login(request, user) # Inicia sesión al usuario recién registrado
-            return redirect('home')
+            return redirect('dashboard')
     else:
         form = CrearUsuarioForm()
 
@@ -31,6 +34,7 @@ def register(request):
 from django.shortcuts import render, redirect
 from django.contrib.auth import login as auth_login
 from .forms import LoginForm
+
 
 def login_view(request):
     error_message = None  # Inicializa el mensaje de error como None
@@ -43,7 +47,7 @@ def login_view(request):
                 # Inicia sesión al usuario
                 auth_login(request, user)
                 # Redirige a la página de inicio después del login
-                return redirect('home')
+                return redirect('dashboard')
         # Solo se establece el mensaje de error si el POST es inválido
         error_message = "Nombre de usuario o contraseña incorrectos."
 
