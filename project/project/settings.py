@@ -63,6 +63,9 @@ AUTH_USER_MODEL = 'onlinecommerceApp.Usuario'
 
 STATIC_URL = '/static/'
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 TEMPLATES = [
     {
@@ -89,7 +92,7 @@ WSGI_APPLICATION = 'project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'onlinecommercepy',
+        'NAME': 'onlinecommercedb',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

@@ -5,6 +5,8 @@
 #   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
+from django.utils import timezone
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.contrib.auth.models import AbstractUser
@@ -25,26 +27,11 @@ class Usuario(AbstractUser):
     cedula = models.IntegerField(blank=True, null=True)
     tipo_cedula = models.CharField(max_length=30, blank=True, null=True)
     genero = models.CharField(max_length=50, blank=True, null=True)
-
-
-
-class Imagenes(models.Model):
-    id_imagen =  models.AutoField(primary_key=True)
-    nombre_archivo = models.CharField(max_length=30, blank=True, null=True)
-    ruta_archivo = models.CharField(max_length=70, blank=True, null=True)
-    url = models.CharField(max_length=100, blank=True, null=True)
-    titulo = models.CharField(max_length=50, blank=True, null=True)
-    descripcion = models.CharField(max_length=200, blank=True, null=True)
-    fecha_creacion = models.DateField(blank=True, null=True)
-    fecha_modificacion = models.DateField(blank=True, null=True)
-    formato = models.CharField(max_length=40, blank=True, null=True)
-    size = models.IntegerField(blank=True, null=True)
-    etiquetas = models.CharField(max_length=100, blank=True, null=True)
-    usuario_creacion = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    imagen = models.CharField(max_length=250)
 
     class Meta:
         managed = True
-        db_table = 'imagenes'
+        db_table = 'Usuario'
 
 class CategoriaProducto(models.Model):
     id_categoria =  models.AutoField(primary_key=True)
@@ -53,6 +40,9 @@ class CategoriaProducto(models.Model):
     class Meta:
         managed = True
         db_table = 'categoria_producto'
+
+    def __str__(self):
+        return self.nombre
 
 class Producto(models.Model):
     id_producto =  models.AutoField(primary_key=True)
@@ -63,10 +53,10 @@ class Producto(models.Model):
     id_categoria_producto = models.ForeignKey(CategoriaProducto, on_delete=models.CASCADE)
     deleted = models.BooleanField(default=False)
     id_usuario_modificacion = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='producto_modificado')
-    fecha_modificado = models.DateField(blank=True, null=True)
-    fecha_creacion = models.DateField(blank=True, null=True)
+    fecha_modificado = models.DateTimeField(default=timezone.now)
+    fecha_creacion = models.DateTimeField(default=timezone.now)
     id_usuario_creacion = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='producto_creado')
-    id_imagen = models.ForeignKey(Imagenes, on_delete=models.CASCADE)
+    imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
 
     class Meta:
         managed = True
@@ -272,13 +262,6 @@ class ProductoHasVenta(models.Model):
         db_table = 'producto_has_venta'
 
 
-class Rol(models.Model):
-    id_rol =  models.AutoField(primary_key=True)
-    tipo = models.CharField(max_length=50)
-
-    class Meta:
-        managed = True
-        db_table = 'rol'
 
 class TipoSolicitud(models.Model):
     id_tipo_solicitud = models.AutoField(primary_key=True)
@@ -310,13 +293,5 @@ class Solicitud(models.Model):
 
 
 
-class UsuarioHasRol(models.Model):
-    id =  models.AutoField(primary_key=True)
-    id_rol = models.ForeignKey(Rol, on_delete=models.CASCADE)
-    id_usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
-
-    class Meta:
-        managed = True
-        db_table = 'usuario_has_rol'
 
 
