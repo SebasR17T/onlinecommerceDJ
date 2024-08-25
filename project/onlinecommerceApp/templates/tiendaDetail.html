@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>{{ tienda.nombre }}</h1>
+  <p>Descripción: {{ tienda.descripcion }}</p>
+  <p>Teléfono: {{ tienda.telefono }}</p>
+  <p>Correo: {{ tienda.correo }}</p>
+  <p>Instagram: {{ tienda.instagram }}</p>
+  <p>Fecha de Creación: {{ tienda.fecha_creacion }}</p>
+  <!-- Agregar botones para gestionar inventario -->
+  <ul>
+    <a href="{% url 'listar_inventario' tienda.id_tienda %} " class="btn btn-success">Ver Inventario</a>
+    {% if user.is_authenticated and user == tienda.id_usuario %}
+
+    <a href="{% url 'crear_producto' %}" class="btn btn-success">Agregar Producto</a>
+    {% endif %}
+
+    <a href="{% url 'listar_tienda' %}" class="btn btn-success">Volver a la lista de tiendas</a>
+
+
+
+  </ul>
+{% endblock %}

@@ -1,0 +1,36 @@
+<!-- templates/inventario/inventario_list.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Inventario de {{ tienda.nombre }}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Descripción</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            {% if user.is_authenticated and user == tienda.id_usuario %}
+            <th>Acciones</th>
+            {% endif %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for inventario in inventarios %}
+        <tr>
+            <td>{{ inventario.id_producto.nombre_producto }}</td>
+            <td>{{ inventario.id_producto.descripcion }}</td>
+            <td>{{ inventario.id_producto.precio }}</td>
+            <td>{{ inventario.cantidad }}</td>
+            {% if user.is_authenticated and user == tienda.id_usuario %}
+            <td>
+                <a href="{% url 'actualizar_producto' inventario.id_inventario %}" class="btn btn-success">Editar</a>
+                <a href="{% url 'borrar_producto' inventario.id_inventario %}" class="btn btn-danger">Eliminar</a>
+            </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

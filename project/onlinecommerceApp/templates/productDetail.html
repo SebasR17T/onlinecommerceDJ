@@ -20,9 +20,9 @@
             <p class="text-muted">${{ object.precio | floatformat:2 }}</p>
         </div>
     </div>
-    <a href="{% url 'borrar_producto' object.pk %} " class="btn btn-primary mt-4">Borrar</a>
+    <a href="{% url 'borrar_producto' producto.id_producto %} " class="btn btn-primary mt-4">Borrar</a>
     <a href="{% url 'listar_producto' %}" class="btn btn-primary mt-4">Volver</a>
-    <a href="{% url 'actualizar_producto' object.pk %}" class="btn btn-primary mt-4">Acualizar</a>
+    <a href="{% url 'actualizar_producto' producto.id_producto %}" class="btn btn-primary mt-4">Acualizar</a>
 
 </div>
 {% endblock %}

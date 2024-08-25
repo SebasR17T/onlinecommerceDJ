@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+
+{% block title %}Agregar Tienda{% endblock %}
+
+{% block content %}
+<h1>Agregar Tienda</h1>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div>
+        {{ form.nombre.label_tag }}
+        {{ form.nombre }}
+        {{ form.nombre.errors }}
+    </div>
+
+    <div>
+        {{ form.telefono.label_tag }}
+        {{ form.telefono }}
+        {{ form.telefono.errors }}
+    </div>
+
+    <div>
+        {{ form.descripcion.label_tag }}
+        {{ form.descripcion }}
+        {{ form.descripcion.errors }}
+    </div>
+
+    <div>
+        {{ form.correo.label_tag }}
+        {{ form.correo }}
+        {{ form.correo.errors }}
+    </div>
+
+    <div>
+        {{ form.instagram.label_tag }}
+        {{ form.instagram }}
+        {{ form.instagram.errors }}
+    </div>
+
+    <div>
+        {{ form.id_categoria.label_tag }}
+        {{ form.id_categoria }}
+        {{ form.id_categoria.errors }}
+    </div>
+
+    <div>
+        {{ form.id_direccion.label_tag }}
+        {{ form.id_direccion }}
+        {{ form.id_direccion.errors }}
+    </div>
+
+    <div>
+        {{ form.imagen.label_tag }}
+        {{ form.imagen }}
+        {{ form.imagen.errors }}
+    </div>
+
+    <button type="submit">Guardar</button>
+</form>
+
+<a href="{% url 'listar_tienda' %}">Volver a la lista de tiendas</a>
+{% endblock %}
