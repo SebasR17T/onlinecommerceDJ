@@ -1,12 +1,15 @@
-from django.contrib.auth import login
+import random
+from datetime import date
+
+from django.contrib.auth import login, logout
 from django.contrib.auth.models import Group
-from django.http import Http404
+from django.http import Http404, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
 from .forms import LoginForm, TiendaForm, InventarioForm
 from .forms import CrearUsuarioForm, ProductForm
-from .models import Producto, Tienda, Inventario
+from .models import Producto, Tienda, Inventario, Carrito
 from django.views.generic import TemplateView
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -14,6 +17,8 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 class TenderoRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.groups.filter(name='Tendero').exists()
+
+
 
 class DashboardView(TemplateView):
     template_name = 'dashboard.html'
@@ -39,6 +44,14 @@ def register(request):
 
 
 
+
+def inicioView(request):
+    # Selecciona todos los productos y los ordena aleatoriamente, luego selecciona un subconjunto
+    productos = list(Producto.objects.all())
+    productos_aleatorios = random.sample(productos, min(len(productos), 5))  # Selecciona 5 productos aleatorios
+    context = {'productos': productos_aleatorios}
+    return render(request, 'inicio.html', context)
+
 def login_view(request):
     error_message = None  # Inicializa el mensaje de error como None
     if request.method == 'POST':
@@ -50,7 +63,7 @@ def login_view(request):
                 # Inicia sesión al usuario
                 auth_login(request, user)
                 # Redirige a la página de inicio después del login
-                return redirect('crear_producto')
+                return redirect('inicio')
         # Solo se establece el mensaje de error si el POST es inválido
         error_message = "Nombre de usuario o contraseña incorrectos."
     else:
@@ -59,6 +72,9 @@ def login_view(request):
     # Renderiza la plantilla 'login.html' pasando el formulario y el mensaje de error como contexto
     return render(request, 'login.html', {'form': form, 'error_message': error_message})
 
+def logoutView (request):
+    logout(request)
+    return redirect('inicio')
 
 class ProductUpdateView(UpdateView):
     model = Producto
@@ -66,18 +82,8 @@ class ProductUpdateView(UpdateView):
     template_name = 'productUpdate.html'
     success_url = reverse_lazy('listar_producto')
 
-    def get_form_kwargs(self):
-        kwarg = super().get_form_kwargs()
-        kwarg['user'] = self.request.user
-        return kwarg
-
-    def get_queryset(self):
-        # Filtra los productos para asegurarse de que el tendero solo pueda editar sus productos
-        tienda = get_object_or_404(Tienda, id_usuario=self.request.user)
-        return Producto.objects.filter(inventario__id_tienda=tienda)
-
     def form_valid(self, form):
-        form.instance.id_usuario_modificacion = self.request.user
+        # Puedes realizar acciones adicionales aquí si es necesario
         return super().form_valid(form)
 
 class ProductCreateView(TenderoRequiredMixin, CreateView):
@@ -247,3 +253,45 @@ class InventarioDeleteView(UserPassesTestMixin, DeleteView):
             return tienda.id_usuario == self.request.user
         except Tienda.DoesNotExist:
             return False
+
+def agregar_producto(request, producto_id):
+    if request.method == 'POST':
+        producto = get_object_or_404(Producto, id_producto=producto_id)  # Cambiado de id a id_producto
+        usuario = request.user
+
+        # Verifica si ya hay un carrito activo para el usuario
+        carrito, created = Carrito.objects.get_or_create(
+            id_usuario=usuario,
+            id_producto=producto,
+            estado_carrito='activo',
+            defaults={'fecha_creacion': date.today()}
+        )
+
+        # Si el carrito ya existe, simplemente lo utilizamos; de lo contrario, lo creamos
+        if not created:
+            carrito.deleted = False
+            carrito.save()
+
+        # Redirigir al carrito o a la misma página después de agregar
+        return HttpResponseRedirect(reverse('carrito'))  # Ajusta según tu URL para la vista del carrito
+
+    # Si no es un método POST, redirige a una página o muestra un error
+    return JsonResponse({'error': 'Método no permitido'}, status=405)
+def CarritoView(request):
+    usuario = request.user
+    carrito_items = Carrito.objects.filter(id_usuario=usuario, estado_carrito='activo', deleted=False)
+    total_precio = sum(item.id_producto.precio for item in carrito_items)
+    context = {
+        'carrito_items': carrito_items,
+        'total_precio': total_precio
+
+    }
+    return render(request, 'carrito.html', context)
+
+class CarritoDeleteView(DeleteView):
+    model = Carrito
+    template_name = 'carritoDelete.html'
+    success_url = reverse_lazy('carrito')
+
+    def get_queryset(self):
+        return Carrito.objects.filter(id_usuario=self.request.user, estado_carrito='activo', deleted=False)

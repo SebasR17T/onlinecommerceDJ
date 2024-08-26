@@ -1,62 +1,17 @@
+{% extends "base.html" %}
 {% load static %}
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- UIkit CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.26/dist/css/uikit.min.css" />
-
-    <!-- UIkit JS -->
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.26/dist/js/uikit.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/uikit@3.16.26/dist/js/uikit-icons.min.js"></script>
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-
-    <title>Carrito</title>
-</head>
-
-
-<body>
-
-    <div class="navbar">
-
-            <!--Logo-->
-        <div class="logo"><img src="Imagenes/Logo.png" width="50px" height="40px"></div>
-
-          <!--Barra Busqueda-->
-        <div class="search">
-            <input placeholder="Search..." type="text">
-            <button type="submit">Go</button>
-        </div>
-
-          <!--Botones-->
-        <div class="button-container">
-            <button class="button">
-                <img src="Imagenes/casa (2).png">
-            </button>
-
-            <button class="button">
-                <img src="Imagenes/usuario (1).png">
-            </button>
-
-            <a href="file:///C:/Users/User/Documents/Online-Commerce-Scrum/Carrito2.html">
-            <button class="button">
-                <img src="Imagenes/carrito-de-compras (2).png">
-            </button>
-            </a>
-        </div>
-
-    </div>
-
+{% block content %}
 
     <div class="dashboard">
         <aside class="menu">
             <ul>
                 <li><a href="{%url 'listar_producto'%}">Productos</a></li>
                 <li><a href="{%url 'listar_tienda'%}">Tiendas</a></li>
-                <li><a href="#">Clientes</a></li>
+                <li><a href="{%url 'inicio'%}">inicio</a></li>
                 <li><a href="#">Reportes</a></li>
+                <a href="{% url 'logout' %}">Cerrar sesión</a>
+
             </ul>
         </aside>
 
@@ -133,21 +88,4 @@
             </section>
         </aside>
     </div>
-
-
-
-
-
-    <footer class="page padding trim">
-        <div class="type">
-            <p class="text-center">© 2021 Online Commerce. Todos los derechos reservados.</p>
-            <p class="text-center">Calle Principal 123, Ciudad, Estado</p>
-            <p class="text-center">Teléfono: 123-456-7890</p>
-            <p class="text-center">Correo electrónico: info@onlinecommerce.com</p>
-        </div>
-    </footer>
-
-
-
-</body>
-</html>
+{% endblock %}

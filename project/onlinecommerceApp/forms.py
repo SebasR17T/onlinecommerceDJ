@@ -2,7 +2,7 @@ from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Usuario, Tienda, Inventario
+from .models import Usuario, Tienda, Inventario, Carrito
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import ModelForm
@@ -51,3 +51,6 @@ class InventarioForm(forms.ModelForm):
     class Meta:
         model = Inventario
         fields = ['id_producto', 'cantidad']
+
+
+

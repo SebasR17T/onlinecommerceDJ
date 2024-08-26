@@ -2,14 +2,16 @@ from django.urls import path
 from .views import register, login_view, DashboardView, ProductCreateView, ProductListView, ProductDetailView, \
     ProductDeleteView, ProductUpdateView, TiendaCreateView, TiendaListView, TiendaDetailView, TiendaUpdateView, \
     TiendaDeleteView, InventarioCreateView, InventarioListView, InventarioDeleteView, \
-    InventarioUpdateView
+    InventarioUpdateView, inicioView, CarritoView, agregar_producto, CarritoDeleteView, logout, logoutView
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
 
+    path('', inicioView, name="inicio"),
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
+    path('logout/', logoutView, name="logout"),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
     path('product/create/', ProductCreateView.as_view(), name='crear_producto'),
     path('product/', ProductListView.as_view(), name='listar_producto'),
@@ -25,5 +27,8 @@ urlpatterns = [
     path('tienda/<int:tienda_id>/inventario/', InventarioListView.as_view(), name='listar_inventario'),
     path('inventario/<int:pk>/actualizar/', InventarioUpdateView.as_view(), name='inventario_update'),
     path('inventario/<int:pk>/eliminar/', InventarioDeleteView.as_view(), name='inventario_delete'),
+    path('agregar_producto/<int:producto_id>/', agregar_producto, name='agregar_producto'),
+    path('carrito/', CarritoView, name='carrito'),
+    path('eliminar-producto/<int:pk>/', CarritoDeleteView.as_view(), name='eliminar_producto'),
 
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

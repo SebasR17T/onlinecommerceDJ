@@ -1,51 +1,39 @@
-.navbar {
-    background-color: #fcc95a;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: solid 2px #dfdede;
+/* Custom Navbar */
+/* Custom Navbar */
+.custom-navbar {
+  background-color: #fcbf4f; /* Puedes cambiar este color a tu preferencia */
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+
 }
 
-h1 {
-    font-family: 'Georgia', serif; /* Cambiar la fuente a Georgia */
-    color: #343a40; /* Color del texto */
-    font-size: 2.5em; /* Tamaño de fuente */
-    margin: 0; /* Eliminar margen por defecto */
-    font-weight: bold; /* Negrita */
+.custom-navbar .navbar-brand img {
+  width: 60px;
+  height: 50px;
 }
 
-.button-container {
-    display: flex;
-    background-color: transparent;
-    width: 230px;
-    height: 80px;
-    align-items: center;
-    justify-content: space-around;
-    border-radius: 10px;
-    margin-top: -5px;
+.custom-nav-link {
+  color: #fff; /* Color del texto */
+  margin-left: 10px;
+  margin-right: 10px;
+
 }
 
-.button {
-    outline: 0 !important;
-    border: 0 !important;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: transparent;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #000000;
-    transition: all ease-in-out 0.3s;
-    cursor: pointer;
+.custom-nav-link:hover {
+  color: #ccc; /* Color al hacer hover */
 }
 
-.button:hover {
-    transform: translateY(-3px);
+.custom-nav-link.active {
+  color: black;
+  font-weight: bold;
+  font-style: italic; /* Nuevo estilo añadido */
+
 }
 
 
+.custom-nav-link.disabled {
+  color: #ccc; /* Color para los enlaces deshabilitados */
+}
 
 
 /* Footer */
@@ -74,4 +62,6 @@ footer.page .text-center {
     }
 }
 
-
+.custom-navbar .custom-nav-link {
+  font-size: 18px !important;
+}

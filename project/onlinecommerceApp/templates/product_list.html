@@ -2,10 +2,12 @@
 {% load static %}
 
 {% block content %}
+
+
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="text-primary">Lista de Productos</h2>
-        <a href="{% url 'crear_producto' %}" class="btn btn-success">Crear Producto</a>
+
     </div>
 
     <div class="row">
@@ -21,11 +23,27 @@
                     <h5 class="card-title">
                         <a href="{% url 'detalle_producto' producto.pk %}">{{ producto.nombre_producto }}</a>
                     </h5>
-                    <p class="card-text text-muted">{{ producto.precio | floatformat:2 }} USD</p>
+                    <p class="card-text text-muted">{{ producto.precio | floatformat:2 }} Pesos</p>
                     <p class="card-text">{{ producto.descripcion }}</p>
-                    <a href="{% url 'detalle_producto' producto.pk %}" class="btn btn-primary">Ver Detalles</a>
-                    <a href="{% url 'actualizar_producto' producto.pk %}" class="btn btn-warning">Editar</a>
-                    <a href="{% url 'borrar_producto' producto.pk %}" class="btn btn-danger">Eliminar</a>
+                     <!-- Contenedor para los botones de acción -->
+                    <div class="d-flex flex-column">
+                            <div class="mb-2">
+                                <a href="{% url 'detalle_producto' producto.pk %}" class="btn btn-primary">Ver Detalles</a>
+                            </div>
+                            <div class="mb-2">
+                                <form method="post" action="{% url 'agregar_producto' producto.id_producto %}" class="d-inline">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-success">Agregar al Carrito</button>
+                                </form>
+                            </div>
+                    {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian"%}
+                            <div class="d-flex">
+                                <a href="{% url 'actualizar_producto' producto.pk %}" class="btn btn-warning me-2">Editar</a>
+                                <a href="{% url 'borrar_producto' producto.pk %}" class="btn btn-danger">Eliminar</a>
+                            </div>
+                            {% endif %}
+                        </div>
+
                 </div>
             </div>
         </div>

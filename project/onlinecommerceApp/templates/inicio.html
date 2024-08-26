@@ -16,9 +16,8 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/base.css' %}">
-    <link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
-    <link rel="stylesheet" href="{% static 'css/carrito.css' %}">
+        <link rel="stylesheet" href="{% static 'css/inicio.css' %}" />
+
 
 
 
@@ -66,36 +65,95 @@
   </div>
 </nav>
 
-<ul class="nav nav-tabs">
-  {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian" %}
-  <li class="nav-item">
-      <a class="nav-link custom-nav-link active" aria-current="page" href="{% url 'dashboard' %}">Dashboard</a>
-  </li>
-  {% endif %}
+    <img src="{% static 'img/banner3.jpg' %}" class="img-fluid" alt="..." style="width:100%; height: 400px;">
 
-  <li class="nav-item">
-      <a class="nav-link custom-nav-link active" href="{% url 'listar_producto' %}">Productos</a>
-  </li>
-  <li class="nav-item">
-      <a class="nav-link custom-nav-link active" href="{% url 'listar_tienda' %}">Tiendas</a>
-  </li>
+<!-- Welcome Section -->
+    <section class="welcome-container">
+        <h2 id="textBienvenido">Bienvenido a Online Commerce</h2>
+        <div class="buttons">
+            <a href="{% url 'listar_producto' %}" class="quote-button">Ver productos</a>
+            <a href="{% url 'listar_tienda' %}" class="add-store-button">Ver tiendas</a>
+        </div>
 
-</ul>
+    </section>
+
+    <!-- Offers Section -->
+    <section class="container scroll-1">
+        <div class="card">
+            <div class="card__image">
+                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card__image">
+                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card__image">
+                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card__image">
+                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card__image">
+                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
+            </div>
+        </div>
+        <div class="card">
+            <div class="card__image">
+                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
+            </div>
+        </div>
+
+        <!-- Add more cards here if necessary -->
+    </section>
 
 
-        {% block content %}
-
-        {% endblock %}
 
 
-<footer class="page padding trim" style="margin-top: 20px;">
+    <!-- Top Ranking Products -->
+<!-- Sección de recomendaciones -->
+<div class="full-width-section">
+    <h1 class="barra-recomienda">Nuestras Recomendaciones</h1>
+
+    <section class="top-container">
+        <div class="barra-productos">
+            {% for producto in productos %}
+            <div class="producto">
+                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}" class="product-img">
+                <h3>{{ producto.nombre_producto }}</h3>
+                <p>{{ producto.descripcion }}</p>
+                <p>Precio: ${{ producto.precio }}</p>
+
+                <!-- Formulario para agregar al carrito -->
+                <form method="post" action="{% url 'agregar_producto' producto.id_producto %}">
+                    {% csrf_token %}
+                    <button type="submit" class="button agregar">Agregar al Carrito</button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+</div>
+
+
+
+
+
+
+    <!-- Footer -->
+    <footer class="page padding trim">
         <div class="type">
             <p class="text-center">© 2021 Online Commerce. Todos los derechos reservados.</p>
             <p class="text-center">Calle Principal 123, Ciudad, Estado</p>
             <p class="text-center">Teléfono: 123-456-7890</p>
             <p class="text-center">Correo electrónico: info@onlinecommerce.com</p>
         </div>
- </footer>
-
+    </footer>
 </body>
 </html>
