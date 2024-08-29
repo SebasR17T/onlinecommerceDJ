@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Enviar Solicitud</h2>
+    <form method="post" class="needs-validation" novalidate>
+        {% csrf_token %}
+        <div class="mb-3">
+            {{ form.nombre.label_tag }}
+            {{ form.nombre }}
+        </div>
+        <div class="mb-3">
+            {{ form.correo.label_tag }}
+            {{ form.correo }}
+        </div>
+        <div class="mb-3">
+            {{ form.telefono.label_tag }}
+            {{ form.telefono }}
+        </div>
+        <div class="mb-3">
+            {{ form.asunto.label_tag }}
+            {{ form.asunto }}
+        </div>
+        <div class="mb-3">
+            {{ form.descripcion.label_tag }}
+            {{ form.descripcion }}
+        </div>
+        <div class="mb-3">
+            {{ form.id_tipo_solicitud.label_tag }}
+            {{ form.id_tipo_solicitud }}
+        </div>
+        <button type="submit" class="btn btn-primary">Enviar</button>
+    </form>
+</div>
+{% endblock %}

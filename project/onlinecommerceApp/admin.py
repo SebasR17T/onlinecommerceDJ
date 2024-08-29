@@ -1,7 +1,9 @@
 
 # Register your models here.
 from django.contrib import admin
-from .models import Usuario, CategoriaTienda
+from .models import Usuario, CategoriaTienda, Solicitud, TipoSolicitud, ProductoHasVenta, Ventas, ProductoHasPedido, \
+    Inventario, InteraccionSolicitud, DetalleFisico, DetalleDomicilio, Pagos, MetodoPago, Pedido, Carrito, Tienda, \
+    Producto
 from .models import CategoriaProducto
 
 class UsuarioAdmin(admin.ModelAdmin):
@@ -9,7 +11,21 @@ class UsuarioAdmin(admin.ModelAdmin):
     search_fields = ('username', 'email', 'apellido')
 
 admin.site.register(Usuario, UsuarioAdmin)
-
+admin.site.register(Producto)
+admin.site.register(Carrito)
+admin.site.register(Tienda)
+admin.site.register(Pedido)
+admin.site.register(MetodoPago)
+admin.site.register(Pagos)
+admin.site.register(DetalleDomicilio)
+admin.site.register(DetalleFisico)
+admin.site.register(InteraccionSolicitud)
+admin.site.register(Inventario)
+admin.site.register(ProductoHasPedido)
+admin.site.register(Ventas)
+admin.site.register(ProductoHasVenta)
+admin.site.register(Solicitud)
+admin.site.register(TipoSolicitud)
 
 
 
@@ -22,3 +38,5 @@ class CategoriaProductoAdmin(admin.ModelAdmin):
 class CategoriaProductoAdmin(admin.ModelAdmin):
     list_display = ('id_categoria', 'nombre')
     search_fields = ('nombre',)
+
+

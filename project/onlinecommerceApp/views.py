@@ -7,21 +7,24 @@ from django.http import Http404, HttpResponse, JsonResponse, HttpResponseRedirec
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
-from .forms import LoginForm, TiendaForm, InventarioForm
+from .forms import LoginForm, TiendaForm, InventarioForm, SolicitudForm
 from .forms import CrearUsuarioForm, ProductForm
-from .models import Producto, Tienda, Inventario, Carrito
+from .models import Producto, Tienda, Inventario, Carrito, Usuario, Solicitud
 from django.views.generic import TemplateView
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import UserPassesTestMixin
+
 
 class TenderoRequiredMixin(UserPassesTestMixin):
     def test_func(self):
         return self.request.user.groups.filter(name='Tendero').exists()
 
 
+class DashboardView(TenderoRequiredMixin, TemplateView):
 
-class DashboardView(TemplateView):
     template_name = 'dashboard.html'
+
+
 def register(request):
 
     if request.method == 'POST': # Verifica si la solicitud es de tipo POST
@@ -255,6 +258,9 @@ class InventarioDeleteView(UserPassesTestMixin, DeleteView):
             return False
 
 def agregar_producto(request, producto_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
     if request.method == 'POST':
         producto = get_object_or_404(Producto, id_producto=producto_id)  # Cambiado de id a id_producto
         usuario = request.user
@@ -295,3 +301,34 @@ class CarritoDeleteView(DeleteView):
 
     def get_queryset(self):
         return Carrito.objects.filter(id_usuario=self.request.user, estado_carrito='activo', deleted=False)
+
+
+class SolicitudCreateView(CreateView):
+    model = Solicitud
+    form_class = SolicitudForm
+    template_name = 'solicitudCreate.html'
+
+    def form_valid(self, form):
+        tienda_id = self.kwargs.get('tienda_id')  # Captura el 'tienda_id' desde la URL
+        tienda = get_object_or_404(Tienda, id_tienda=tienda_id)  # Obtiene la tienda correspondiente
+        form.instance.id_tienda = tienda  # Asigna la tienda al formulario
+
+        # Asignar el usuario autenticado al campo 'id_usuario_creacion'
+        form.instance.id_usuario_creacion = self.request.user
+
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('tienda_detail', kwargs={'pk': self.object.id_tienda.id_tienda})
+
+class ListarSolicitudView(ListView):
+    model = Solicitud
+    template_name = 'solicitudList.html'
+    context_object_name = 'solicitudes'
+
+    def get_queryset(self):
+        # Filtra las solicitudes por la tienda específica
+        tienda_id = self.kwargs.get('tienda_id')
+        return Solicitud.objects.filter(id_tienda=tienda_id)
+
+

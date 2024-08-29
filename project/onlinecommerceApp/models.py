@@ -21,9 +21,9 @@ class Usuario(AbstractUser):
     apellido = models.CharField(max_length=200)
     estado = models.IntegerField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
-    fecha_creacion = models.DateField(blank=True, null=True)
-    fecha_modificacion = models.DateField(blank=True, null=True)
-    telefono = models.IntegerField(blank=True, null=True)
+    fecha_creacion = models.DateField(auto_now_add=True, null=True)
+    fecha_modificacion = models.DateField(auto_now_add=True, null=True)
+    telefono = models.CharField(max_length=100, null=True)
     fecha_nacimiento = models.DateField(blank=True, null=True)
     cedula = models.IntegerField(blank=True, null=True)
     tipo_cedula = models.CharField(max_length=30, blank=True, null=True)
@@ -58,7 +58,7 @@ class Producto(models.Model):
     deleted = models.BooleanField(default=False)
     id_usuario_modificacion = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,null=True, related_name='producto_modificado')
     fecha_modificado = models.DateTimeField(default=timezone.now)
-    fecha_creacion = models.DateTimeField(default=timezone.now)
+    fecha_creacion = models.DateTimeField(default=timezone.now, null=True)
     id_usuario_creacion = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='producto_creado')
     imagen = models.ImageField(upload_to='productos/', blank=True, null=True)
 
@@ -73,7 +73,7 @@ class Producto(models.Model):
 
 class Carrito(models.Model):
     id_carrito =  models.AutoField(primary_key=True)
-    fecha_creacion = models.DateField()
+    fecha_creacion = models.DateField(auto_now_add=True, null=True)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     deleted = models.BooleanField(default=False)
@@ -106,11 +106,11 @@ class Tienda(models.Model):
     descripcion = models.CharField(max_length=500, blank=True, null=True)
     correo = models.CharField(max_length=200, blank=True, null=True)
     instagram = models.CharField(max_length=200, blank=True, null=True)
-    fecha_creacion = models.DateField(blank=True, null=True)
+    fecha_creacion = models.DateField(auto_now_add=True, null=True)
     id_categoria = models.ForeignKey(CategoriaTienda, on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     deleted = models.BooleanField(default=False)
-    fecha_modificacion = models.DateField(blank=True, null=True)
+    fecha_modificacion = models.DateField(auto_now_add=True, null=True)
     id_direccion = models.CharField(max_length=255, null=True, blank=True)
     imagen = models.ImageField(upload_to='tiendas/', blank=True, null=True)
 
@@ -124,7 +124,7 @@ class Tienda(models.Model):
 class Pedido(models.Model):
     id_pedido =  models.AutoField(primary_key=True)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    fecha_creacion = models.DateField(blank=True, null=True)
+    fecha_creacion = models.DateField(auto_now_add=True, null=True)
     fecha_entrega = models.DateField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
     id_tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
@@ -151,7 +151,7 @@ class Pagos(models.Model):
     id_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
     id_usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     id_metodo_pago = models.ForeignKey(MetodoPago, on_delete=models.CASCADE)
-    fecha_pago = models.DateField(blank=True, null=True)
+    fecha_pago = models.DateField(auto_now_add=True, null=True)
     monto_pago = models.IntegerField(blank=True, null=True)
     moneda = models.CharField(max_length=50, blank=True, null=True)
     estado_pago = models.IntegerField(blank=True, null=True)
@@ -200,7 +200,7 @@ class InteraccionSolicitud(models.Model):
     deleted = models.BooleanField(default=False)
     interaccion = models.CharField(max_length=300, blank=True, null=True)
     estado = models.CharField(max_length=50, blank=True, null=True)
-    fecha_creacion = models.DateField()
+    fecha_creacion = models.DateField(auto_now_add=True, null=True)
 
     class Meta:
         managed = True
@@ -212,7 +212,7 @@ class Inventario(models.Model):
     id_tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
     id_producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
     cantidad = models.CharField(max_length=45)
-    fecha_creacion = models.DateField(blank=True, null=True)
+    fecha_creacion = models.DateField(auto_now_add=True, null=True)
     id_usuario_creacion = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='inventario_creacion')
     fecha_modificado = models.DateField(blank=True, null=True)
     id_usuario_modificacion = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, related_name='inventario_modificacion')
@@ -238,7 +238,7 @@ class ProductoHasPedido(models.Model):
 
 class Ventas(models.Model):
     id_venta =  models.AutoField(primary_key=True)
-    fecha_creacion = models.DateField()
+    fecha_creacion = models.DateField(auto_now_add=True, null=True)
     id_usuario_creacion = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     id_tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
     total = models.IntegerField(blank=True, null=True)
@@ -273,25 +273,30 @@ class TipoSolicitud(models.Model):
         managed = True
         db_table = 'tipo_solicitud'
 
+    def __str__(self):
+        return self.nombre
+
+
+
 class Solicitud(models.Model):
     id_solicitud =  models.AutoField(primary_key=True)
-    fecha_solicitud = models.DateField()
+    fecha_solicitud = models.DateField(auto_now_add=True, null=True)
     estado = models.CharField(max_length=50)
     id_tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE)
     id_usuario_creacion = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='solicitud_creada')
     id_tipo_solicitud = models.ForeignKey(TipoSolicitud, on_delete=models.CASCADE)
-    id_pedido = models.ForeignKey(Pedido, on_delete=models.CASCADE)
-    fecha_respuesta = models.DateField(blank=True, null=True)
-    id_usuario_respuesta = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='solicitud_respondida')
-    id_usuario_modificacion = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='solicitud_modificada')
-    descripcion = models.CharField(max_length=300, blank=True, null=True)
+    descripcion = models.CharField(max_length=1000, blank=True, null=True)
     asunto = models.CharField(max_length=250, blank=True, null=True)
-    respuesta_cierre = models.CharField(max_length=250, blank=True, null=True)
     deleted = models.BooleanField(default=False)
+    nombre = models.CharField(max_length=100, null=True)
+    correo = models.EmailField(null=True)
+    telefono = models.CharField(max_length=100, null=True)
 
     class Meta:
         managed = True
         db_table = 'solicitud'
+
+
 
 
 

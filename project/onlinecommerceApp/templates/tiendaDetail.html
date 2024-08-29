@@ -6,6 +6,17 @@
 <div class="container mt-5">
     <!-- Tarjeta de detalles de la tienda -->
     <div class="card mb-4">
+
+
+        {% if user.is_authenticated and user != tienda.id_usuario %}
+        <a href="{% url 'solicitud' tienda_id=tienda.id_tienda %}" class="btn btn-info" style="margin-bottom: 10px;">Crear Solicitud</a>
+        {% endif %}
+
+        {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian" %}
+        <a href="{% url 'listarSolicitudes' tienda_id=tienda.id_tienda %}" class="btn btn-info">Ver Solicitudes</a>
+        {% endif %}
+
+
         <!-- Imagen de la tienda -->
         <div class="text-center">
             {% if tienda.imagen %}

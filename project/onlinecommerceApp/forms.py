@@ -6,7 +6,7 @@ from .models import Usuario, Tienda, Inventario, Carrito
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 from django.forms import ModelForm
-from .models import Producto
+from .models import Producto, Solicitud
 
 class CrearUsuarioForm(UserCreationForm):
     ROLE_CHOICES = (
@@ -51,6 +51,12 @@ class InventarioForm(forms.ModelForm):
     class Meta:
         model = Inventario
         fields = ['id_producto', 'cantidad']
+
+
+class SolicitudForm(forms.ModelForm):
+    class Meta:
+        model = Solicitud
+        fields = ['nombre','correo', 'telefono', 'asunto','descripcion', 'id_tipo_solicitud']
 
 
 
