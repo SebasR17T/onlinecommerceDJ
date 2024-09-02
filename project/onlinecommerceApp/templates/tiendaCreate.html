@@ -1,65 +1,60 @@
 {% extends "base.html" %}
 {% load custom_filters %}
+{% load crispy_forms_tags %}
 
 {% block title %}Agregar Tienda{% endblock %}
 
 {% block content %}
-<h1>Agregar Tienda</h1>
+<div class="row justify-content-center">
+    <div class="col-md-10">
+            <div class="card-body">
+                <h1 class="card-title text-center">Agregar Tienda</h1>
+                <form method="post" enctype="multipart/form-data" class="mt-4">
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.nombre|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.telefono|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            {{ form.descripcion|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.correo|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            {{ form.instagram|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.id_categoria|as_crispy_field }}
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            {{ form.id_direccion|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.imagen|as_crispy_field }}
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-4">Guardar</button>
+                </form>
+                <div class="text-center mt-3">
+                    <a href="{% url 'listar_tienda' %}">Volver a la lista de tiendas</a>
 
-<form method="post" enctype="multipart/form-data">
-    {% csrf_token %}
-    {{ form.non_field_errors }}
-
-    <div>
-        {{ form.nombre.label_tag }}
-        {{ form.nombre }}
-        {{ form.nombre.errors }}
+                </div>
+            </div>
     </div>
-
-    <div>
-        {{ form.telefono.label_tag }}
-        {{ form.telefono }}
-        {{ form.telefono.errors }}
-    </div>
-
-    <div>
-        {{ form.descripcion.label_tag }}
-        {{ form.descripcion }}
-        {{ form.descripcion.errors }}
-    </div>
-
-    <div>
-        {{ form.correo.label_tag }}
-        {{ form.correo }}
-        {{ form.correo.errors }}
-    </div>
-
-    <div>
-        {{ form.instagram.label_tag }}
-        {{ form.instagram }}
-        {{ form.instagram.errors }}
-    </div>
-
-    <div>
-        {{ form.id_categoria.label_tag }}
-        {{ form.id_categoria }}
-        {{ form.id_categoria.errors }}
-    </div>
-
-    <div>
-        {{ form.id_direccion.label_tag }}
-        {{ form.id_direccion }}
-        {{ form.id_direccion.errors }}
-    </div>
-
-    <div>
-        {{ form.imagen.label_tag }}
-        {{ form.imagen }}
-        {{ form.imagen.errors }}
-    </div>
-
-    <button type="submit">Guardar</button>
-</form>
-
-<a href="{% url 'listar_tienda' %}">Volver a la lista de tiendas</a>
+</div>
 {% endblock %}

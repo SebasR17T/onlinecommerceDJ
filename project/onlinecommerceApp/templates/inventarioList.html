@@ -4,7 +4,12 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="text-primary">Inventario de {{ tienda.nombre }}</h2>
+    <h2 style="font-family: 'Verdana', sans-serif; color: black; font-weight: bold; margin-bottom: 30px">Inventario de {{ tienda.nombre }}</h2>
+
+    <!-- Mostrar botón de exportación solo si el usuario tiene permisos -->
+         {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian" %}
+        <a href="{% url 'exportar_inventario' tienda.id_tienda %}" class="btn btn-warning mb-3">Exportar Inventario</a>
+    {% endif %}
 
     <div class="row">
         {% for inventario in inventarios %}
@@ -19,40 +24,35 @@
 
                 <!-- Información del producto -->
                 <div class="card-body">
-                    <h5 class="card-title">{{ inventario.id_producto.nombre_producto }}</h5>
+                    <h5 class="card-title" style="font-family: 'Trebuchet MS', sans-serif; color: black; font-weight: bold;">{{ inventario.id_producto.nombre_producto }}</h5>
                     <p class="card-text">{{ inventario.id_producto.descripcion }}</p>
                     <p class="card-text text-muted">{{ inventario.id_producto.precio }} Pesos</p>
                     <p class="card-text">Cantidad: {{ inventario.cantidad }}</p>
 
-
-                     <!-- Contenedor para los botones de acción -->
+                    <!-- Contenedor para los botones de acción -->
                     <div class="d-flex flex-column">
-                            <div class="mb-2">
-                                <a href="{% url 'detalle_producto' inventario.id_inventario %}" class="btn btn-primary">Ver Detalles</a>
+                        <div class="mb-2">
+                            <a href="{% url 'detalle_producto' inventario.id_inventario %}" class="btn btn-primary">Ver Detalles</a>
+                        </div>
+                        <div class="mb-2">
+                            <form method="post" action="{% url 'agregar_producto' inventario.id_inventario %}" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success" style="background-color: #fcbf4f; border-color: #fcbf4f;">Agregar al Carrito</button>
+                            </form>
+                        </div>
+                            {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian" %}
+                            <div class="d-flex">
+                                <a href="{% url 'actualizar_producto' inventario.id_inventario %}" class="btn btn-success" style="margin-right:5px">Editar</a>
+                                <a href="{% url 'borrar_producto' inventario.id_inventario %}" class="btn btn-danger">Eliminar</a>
                             </div>
-                            <div class="mb-2">
-                                <form method="post" action="{% url 'agregar_producto' inventario.id_inventario %}" class="d-inline">
-                                    {% csrf_token %}
-                                    <button type="submit" class="btn btn-success">Agregar al Carrito</button>
-                                </form>
-                            </div>
-                            {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian"%}
-                                <div class="d-flex">
-                                    <a href="{% url 'actualizar_producto' inventario.id_inventario %}" class="btn btn-warning me-2">Editar</a>
-                                    <a href="{% url 'borrar_producto' inventario.id_inventario %}" class="btn btn-danger">Eliminar</a>
-                                </div>
-                            {% endif %}
+                        {% endif %}
                     </div>
-
-
-
-
-
                 </div>
             </div>
         </div>
         {% endfor %}
     </div>
-    <a href="{% url 'listar_tienda' %}" class="btn btn-success mt-3">Volver a la lista de tiendas</a>
+
+    <button onclick="history.back()" class="btn btn-secondary">Volver</button>
 </div>
 {% endblock %}

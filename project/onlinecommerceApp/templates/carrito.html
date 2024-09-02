@@ -4,7 +4,7 @@
 {% block content %}
 
 <!-- Contenedor principal -->
-<div class="container-total">
+<div class="container-total" style="margin-top:20px">
 
     <!-- Contenedor izquierdo -->
     <div class="container-left">
@@ -38,8 +38,8 @@
                 {% endfor %}
                 <!-- Fila para el total -->
                 <tr>
-                    <td colspan="2"><strong>Total:</strong></td>
-                    <td><strong>${{ total_precio }}</strong></td>
+                    <td colspan="2" style="font-size:40px"><strong>Total:</strong></td>
+                    <td style="font-size:30px"><strong>${{ total_precio }}</strong></td>
                     <td></td>
                 </tr>
             </tbody>
@@ -51,10 +51,10 @@
     <!-- Contenedor derecho -->
     <div class="container-right">
         <div class="carrito">
-            <h2 class="subtitle">Detalles de la Compra</h2>
+            <h2 class="subtitle"><strong>Detalles de la Compra</strong></h2>
             <ul class="purchase-details">
                 {% for item in carrito_items %}
-                <li>{{ item.id_producto.nombre_producto }} - ${{ item.id_producto.precio }}</li>
+                <li><strong>{{ item.id_producto.nombre_producto }} </strong>- ${{ item.id_producto.precio }}</li>
                 {% endfor %}
             </ul>
 

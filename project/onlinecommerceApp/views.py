@@ -1,15 +1,15 @@
 import random
 from datetime import date
-
+import csv  # Añade esta línea para importar el módulo csv
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import Group
 from django.http import Http404, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login as auth_login
-from .forms import LoginForm, TiendaForm, InventarioForm, SolicitudForm
+from .forms import LoginForm, TiendaForm, InventarioForm, SolicitudForm, ReseñaForm
 from .forms import CrearUsuarioForm, ProductForm
-from .models import Producto, Tienda, Inventario, Carrito, Usuario, Solicitud
+from .models import Producto, Tienda, Inventario, Carrito, Usuario, Solicitud, Reseña, CategoriaProducto
 from django.views.generic import TemplateView
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import UserPassesTestMixin
@@ -39,7 +39,7 @@ def register(request):
                     group = Group.objects.get(name='Tendero')
                 user.groups.add(group) # Añade el usuario al grupo correspondiente
             login(request, user) # Inicia sesión al usuario recién registrado
-            return redirect('dashboard')
+            return redirect('inicio')
     else:
         form = CrearUsuarioForm()
     # Renderiza la plantilla 'register.html' pasando el formulario como contexto
@@ -49,10 +49,21 @@ def register(request):
 
 
 def inicioView(request):
+
+    if request.user.is_authenticated:
+        nombre_usuario = request.user.username
+    else:
+        nombre_usuario = "Invitado"
+
     # Selecciona todos los productos y los ordena aleatoriamente, luego selecciona un subconjunto
     productos = list(Producto.objects.all())
     productos_aleatorios = random.sample(productos, min(len(productos), 5))  # Selecciona 5 productos aleatorios
-    context = {'productos': productos_aleatorios}
+
+    context = {
+        'productos': productos_aleatorios,
+        'nombre_usuario': nombre_usuario,
+        'is_home': True
+    }
     return render(request, 'inicio.html', context)
 
 def login_view(request):
@@ -86,8 +97,31 @@ class ProductUpdateView(UpdateView):
     success_url = reverse_lazy('listar_producto')
 
     def form_valid(self, form):
-        # Puedes realizar acciones adicionales aquí si es necesario
-        return super().form_valid(form)
+        response = super().form_valid(form)
+
+        # Obtener la cantidad de inventario del formulario
+        cantidad_inventario = form.cleaned_data['cantidad_inventario']
+
+        # Encontrar la entrada de inventario para el producto actualizado
+        inventario = Inventario.objects.filter(id_producto=self.object).first()
+        if inventario:
+            # Actualizar la cantidad en el inventario
+            inventario.cantidad = cantidad_inventario
+            inventario.fecha_modificado = self.object.fecha_modificado
+            inventario.id_usuario_modificacion = self.request.user
+            inventario.save()
+        else:
+            # Si no hay una entrada en el inventario, puedes decidir qué hacer
+            tienda = Tienda.objects.filter(id_usuario=self.request.user).first()
+            if tienda:
+                Inventario.objects.create(
+                    id_tienda=tienda,
+                    id_producto=self.object,
+                    cantidad=cantidad_inventario,
+                    id_usuario_creacion=self.request.user
+                )
+
+        return response
 
 class ProductCreateView(TenderoRequiredMixin, CreateView):
     model = Producto
@@ -99,33 +133,43 @@ class ProductCreateView(TenderoRequiredMixin, CreateView):
         # Asignar el usuario actual al producto
         form.instance.id_usuario_creacion = self.request.user
 
-        # Guarda el producto primero antes de crear una entrada en el inventario
+        # Guardar el producto primero antes de crear una entrada en el inventario
         response = super().form_valid(form)
+
+        # Obtener la cantidad de inventario del formulario
+        cantidad_inventario = form.cleaned_data['cantidad_inventario']
 
         # Seleccionar la primera tienda asociada al usuario actual
         tienda = Tienda.objects.filter(id_usuario=self.request.user).first()
         if not tienda:
             # Manejar el caso en el que no hay tiendas asociadas al usuario
-            return redirect('error_page')  # Redirige a una página de error o muestra un mensaje
+            return HttpResponse('Usuario no asociado con una tienda')  # Redirige a una página de error o muestra un mensaje
 
         # Crear una entrada en el inventario para el nuevo producto
         Inventario.objects.create(
             id_tienda=tienda,
             id_producto=form.instance,  # El producto ya está guardado en este punto
-            cantidad=0,  # Ajusta la cantidad según sea necesario
+            cantidad=cantidad_inventario,  # Usar la cantidad proporcionada por el usuario
             id_usuario_creacion=self.request.user
         )
 
         return response
-
 
 class ProductListView(ListView):
     model = Producto
     template_name = 'product_list.html'  # Nombre del archivo HTML para renderizar la lista
     context_object_name = 'productos'  # Nombre del contexto para acceder a los productos en la plantilla
     def get_queryset(self):
-        # Personaliza la consulta si es necesario
-        return Producto.objects.all()
+        queryset = Producto.objects.all()
+        categoria_id = self.request.GET.get('categoria')  # Obtener el parámetro de categoría de la URL
+        if categoria_id:
+            queryset = queryset.filter(id_categoria_producto_id=categoria_id)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = CategoriaProducto.objects.all()  # Pasar las categorías al contexto
+        return context
 
 
 
@@ -166,7 +210,8 @@ class TiendaDetailView(DetailView):
     context_object_name = 'tienda'
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs) # El **kwargs lo usamos para traer el id de la tienda que seleccionemos
+        print("kwargs:", kwargs) #es una prueba para ver que tienda seleccionamos en la terminal
         tienda = self.object
         context['tienda_id'] = tienda.id_tienda  # Agregar el ID de la tienda al contexto
         # Obtener los inventarios de la tienda
@@ -283,6 +328,8 @@ def agregar_producto(request, producto_id):
 
     # Si no es un método POST, redirige a una página o muestra un error
     return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+
 def CarritoView(request):
     usuario = request.user
     carrito_items = Carrito.objects.filter(id_usuario=usuario, estado_carrito='activo', deleted=False)
@@ -293,6 +340,8 @@ def CarritoView(request):
 
     }
     return render(request, 'carrito.html', context)
+
+
 
 class CarritoDeleteView(DeleteView):
     model = Carrito
@@ -319,7 +368,7 @@ class SolicitudCreateView(CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('tienda_detail', kwargs={'pk': self.object.id_tienda.id_tienda})
+        return reverse_lazy('detalle_tienda', kwargs={'pk': self.object.id_tienda.id_tienda})
 
 class ListarSolicitudView(ListView):
     model = Solicitud
@@ -330,5 +379,68 @@ class ListarSolicitudView(ListView):
         # Filtra las solicitudes por la tienda específica
         tienda_id = self.kwargs.get('tienda_id')
         return Solicitud.objects.filter(id_tienda=tienda_id)
+
+class ReseñaCreateView(CreateView):
+    model = Reseña
+    form_class = ReseñaForm
+    template_name = 'reseñaCreate.html'
+
+    def form_valid(self, form):
+        tienda_id = self.kwargs.get('tienda_id')  # Captura el 'tienda_id' desde la URL
+        tienda = get_object_or_404(Tienda, id_tienda=tienda_id)  # Obtiene la tienda correspondiente
+        form.instance.id_tienda = tienda  # Asigna la tienda al formulario
+
+        # Asignar el usuario autenticado al campo 'id_usuario_creacion'
+        form.instance.id_usuario_creacion = self.request.user
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        tienda_id = self.kwargs.get('tienda_id')  # Captura el 'tienda_id' desde la URL
+        tienda = get_object_or_404(Tienda, id_tienda=tienda_id)  # Obtiene la tienda correspondiente
+        context['tienda'] = tienda  # Incluye la tienda en el contexto
+        return context
+
+    def get_success_url(self):
+        return reverse_lazy('detalle_tienda', kwargs={'pk': self.object.id_tienda.id_tienda})
+
+def AboutView(request):
+    if request.user.is_authenticated:
+        nombre_usuario = request.user.username
+    else:
+        nombre_usuario = "invitado"
+
+    about_content = {
+        'aboutkey':"OnlineCommerce es la coneccion de todos los tenderos de barrio con sus vecinos",
+        'nombre_usuario' : nombre_usuario,
+    }
+
+    return render(request, 'about.html', about_content)
+
+
+def exportar_inventario(request, tienda_id):
+    tienda = get_object_or_404(Tienda, id_tienda=tienda_id)
+
+    # Verificar si el usuario tiene permiso para exportar
+    if request.user.is_authenticated and (request.user == tienda.id_usuario or request.user.username == "sebastian"):
+        inventarios = Inventario.objects.filter(id_tienda=tienda)
+
+        # Crear la respuesta con el tipo de contenido para CSV
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = f'attachment; filename="inventario_{tienda.nombre}.csv"'
+
+        writer = csv.writer(response)
+        writer.writerow(['Producto', 'Cantidad', 'Fecha de Creación'])
+
+        # Escribir los datos del inventario
+        for inventario in inventarios:
+            writer.writerow([inventario.id_producto.nombre_producto, inventario.cantidad, inventario.fecha_creacion])
+
+        return response
+    else:
+        return HttpResponse("No tienes permiso para exportar este inventario.", status=403)
+
+
 
 

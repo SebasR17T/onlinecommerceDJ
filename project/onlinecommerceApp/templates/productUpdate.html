@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% load custom_filters %}
 
-{% block title %}Agregar Producto{% endblock %}
+{% block title %}Actualizar Producto{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -26,6 +26,12 @@
                     <div class="form-group">
                         {{ form.descripcion.label_tag }}
                         {{ form.descripcion|add_class:"form-control" }}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <p>Cantidad en Inventario</p>
+                        {{ form.cantidad_inventario|add_class:"form-control" }}
                     </div>
                 </div>
             </div>
@@ -68,6 +74,4 @@
         </div>
     </div>
 </div>
-
-
 {% endblock %}

@@ -1,159 +1,83 @@
+{% extends "base.html" %}
 {% load static %}
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Mi Sitio{% endblock %}</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- FontAwesome -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="{% static 'css/inicio.css' %}" />
 
+{% block content %}
 
+    <!-- Banner Image -->
+    <img src="{% static 'img/banner3.jpg' %}" class="img-fluid" alt="Banner" style="width: 100%; height: 500px; object-fit: cover;">
 
-
-</head>
-<body>
-
-<nav class="navbar navbar-expand custom-navbar">
-  <div class="container-fluid">
-    <!-- Logo -->
-    <div class="navbar-brand">
-      <img src="{% static 'img/Logo.png' %}" width="60px" height="50px" alt="Logo">
-    </div>
-
-    <!-- Navbar para usuarios autenticados -->
-    {% if user.is_authenticated %}
-      <ul class="navbar-nav d-flex flex-row">
-
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'inicio' %}">Inicio</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'logout' %}">Logout</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'carrito' %}">Carrito</a>
-        </li>
-      </ul>
-    {% endif %}
-
-    <!-- Navbar para usuarios no autenticados -->
-    {% if not user.is_authenticated %}
-      <ul class="navbar-nav d-flex flex-row">
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'inicio' %}">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'register' %}">Registrarse</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'login' %}">Login</a>
-        </li>
-      </ul>
-    {% endif %}
-  </div>
-</nav>
-
-    <img src="{% static 'img/banner3.jpg' %}" class="img-fluid" alt="..." style="width:100%; height: 400px;">
-
-<!-- Welcome Section -->
-    <section class="welcome-container">
-        <h2 id="textBienvenido">Bienvenido a Online Commerce</h2>
+    <!-- Welcome Section -->
+    <section class="welcome-container text-center">
+        <h2 id="textBienvenido">Bienvenido a Online Commerce {{ nombre_usuario|title }}</h2>
         <div class="buttons">
-            <a href="{% url 'listar_producto' %}" class="quote-button">Ver productos</a>
-            <a href="{% url 'listar_tienda' %}" class="add-store-button">Ver tiendas</a>
-        </div>
+              <a href="{% url 'listar_producto' %}" class="btn btn-primary" role="button" style="background-color: orange; border: 5px solid orange; border-radius: 4px;">Ver productos</a>
+              <a href="{% url 'listar_tienda' %}" class="btn btn-primary" role="button" style="background-color: orange;  border: 5px solid orange; border-radius: 4px;">Ver tiendas</a>
 
+        </div>
     </section>
 
     <!-- Offers Section -->
-    <section class="container scroll-1">
-        <div class="card">
-            <div class="card__image">
-                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
+    <section class="offers-section">
+        <div class="offers-container">
+            <div class="card1" style="width:400px">
+                <div class="card__image">
+                    <img src="{% static 'img/banner.jpg' %}" alt="Oferta 1">
+                </div>
+            </div>
+            <!-- Repeat the card div as needed -->
+            <div class="card1" style="width:400px">
+                <div class="card__image">
+                    <img src="{% static 'img/banner.jpg' %}" alt="Oferta 2">
+                </div>
+            </div>
+            <!-- Add more cards here if necessary -->
+            <div class="card1" style="width:400px">
+                <div class="card__image">
+                    <img src="{% static 'img/banner.jpg' %}" alt="Oferta 2">
+                </div>
+            </div>
+            <div class="card1" style="width:400px">
+                <div class="card__image">
+                    <img src="{% static 'img/banner.jpg' %}" alt="Oferta 2">
+                </div>
+            </div>
+            <div class="card1" style="width:400px">
+                <div class="card__image">
+                    <img src="{% static 'img/banner.jpg' %}" alt="Oferta 2">
+                </div>
+            </div>
+            <div class="card1" style="width:400px">
+                <div class="card__image">
+                    <img src="{% static 'img/banner.jpg' %}" alt="Oferta 2">
+                </div>
+            </div>
+            <div class="card1" style="width:400px">
+                <div class="card__image">
+                    <img src="{% static 'img/banner.jpg' %}" alt="Oferta 2">
+                </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card__image">
-                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
-            </div>
-        </div>
-        <div class="card">
-            <div class="card__image">
-                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
-            </div>
-        </div>
-        <div class="card">
-            <div class="card__image">
-                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
-            </div>
-        </div>
-        <div class="card">
-            <div class="card__image">
-                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
-            </div>
-        </div>
-        <div class="card">
-            <div class="card__image">
-                <img src="{% static 'img/banner.jpg' %}" alt="Banner">
-            </div>
-        </div>
-
-        <!-- Add more cards here if necessary -->
     </section>
-
-
-
 
     <!-- Top Ranking Products -->
-<!-- Sección de recomendaciones -->
-<div class="full-width-section">
-    <h1 class="barra-recomienda">Nuestras Recomendaciones</h1>
-
-    <section class="top-container">
-        <div class="barra-productos">
-            {% for producto in productos %}
-            <div class="producto">
-                <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}" class="product-img">
-                <h3>{{ producto.nombre_producto }}</h3>
-                <p>{{ producto.descripcion }}</p>
-                <p>Precio: ${{ producto.precio }}</p>
-
-                <!-- Formulario para agregar al carrito -->
-                <form method="post" action="{% url 'agregar_producto' producto.id_producto %}">
-                    {% csrf_token %}
-                    <button type="submit" class="button agregar">Agregar al Carrito</button>
-                </form>
+    <section class="top-ranking-products" style="width:100%">
+        <h1 class="barra-recomienda text-center">Nuestras Recomendaciones</h1>
+        <div class="top-container">
+            <div class="barra-productos">
+                {% for producto in productos %}
+                <div class="producto">
+                    <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre_producto }}" class="product-img">
+                    <h3 class="product-title">{{ producto.nombre_producto }}</h3>
+                    <p><strong>Descripción: </strong>{{ producto.descripcion }}</p>
+                    <p><strong>Precio: </strong>${{ producto.precio }}</p>
+                    <form method="post" action="{% url 'agregar_producto' producto.id_producto %}">
+                        {% csrf_token %}
+                        <button type="submit" class="button agregar" style="backgraund-color:#fcbf4f">Agregar al Carrito</button>
+                    </form>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
     </section>
-</div>
 
-
-
-
-
-
-    <!-- Footer -->
-    <footer class="page padding trim">
-        <div class="type">
-            <p class="text-center">© 2021 Online Commerce. Todos los derechos reservados.</p>
-            <p class="text-center">Calle Principal 123, Ciudad, Estado</p>
-            <p class="text-center">Teléfono: 123-456-7890</p>
-            <p class="text-center">Correo electrónico: info@onlinecommerce.com</p>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock %}

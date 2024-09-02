@@ -1,36 +1,18 @@
-{% extends "base.html" %}
-{% load static %}
-
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
 {% block content %}
-<div class="container mt-4">
-    <h2>Enviar Solicitud</h2>
-    <form method="post" class="needs-validation" novalidate>
-        {% csrf_token %}
-        <div class="mb-3">
-            {{ form.nombre.label_tag }}
-            {{ form.nombre }}
-        </div>
-        <div class="mb-3">
-            {{ form.correo.label_tag }}
-            {{ form.correo }}
-        </div>
-        <div class="mb-3">
-            {{ form.telefono.label_tag }}
-            {{ form.telefono }}
-        </div>
-        <div class="mb-3">
-            {{ form.asunto.label_tag }}
-            {{ form.asunto }}
-        </div>
-        <div class="mb-3">
-            {{ form.descripcion.label_tag }}
-            {{ form.descripcion }}
-        </div>
-        <div class="mb-3">
-            {{ form.id_tipo_solicitud.label_tag }}
-            {{ form.id_tipo_solicitud }}
-        </div>
-        <button type="submit" class="btn btn-primary">Enviar</button>
+  <div class="form-container" style="display: flex; justify-content: center; align-items: center; flex-direction: column; min-height: 80vh;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Crear Solicitud</h2>
+    <form method="post" style="width: 100%; max-width: 500px;">
+      {% csrf_token %}
+      {{ form|crispy }}
+      <div style="text-align: center; margin-top: 20px;">
+        <button type="submit" class="btn btn-success" style="font-family: 'Verdana', sans-serif; background-color: orange; color: white; border: none; ">
+          Enviar
+        </button>
+        <button onclick="history.back()" class="btn btn-secondary" style="font-family: 'Verdana', sans-serif;">Volver</button>
+
+      </div>
     </form>
-</div>
+  </div>
 {% endblock %}

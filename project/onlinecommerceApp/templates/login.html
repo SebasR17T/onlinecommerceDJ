@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load custom_filters %}
+{% load crispy_forms_tags %}
 
 {% block title %}Login{% endblock %}
 
@@ -7,21 +8,10 @@
 <div class="row justify-content-center">
     <div class="col-md-6">
         <h2 class="text-center">Iniciar sesión</h2>
-        {% if error_message %}
-            <div id="error-message" class="alert alert-danger" role="alert">
-                {{ error_message }}
-            </div>
-        {% endif %}
+
         <form method="post" class="mt-4">
             {% csrf_token %}
-            <div class="form-group">
-                {{ form.username.label_tag }}
-                {{ form.username|add_class:"form-control" }}
-            </div>
-            <div class="form-group">
-                {{ form.password.label_tag }}
-                {{ form.password|add_class:"form-control" }}
-            </div>
+            {{ form|crispy }}
             <button type="submit" class="btn btn-primary btn-block">Iniciar sesión</button>
         </form>
 
@@ -31,12 +21,4 @@
     </div>
 </div>
 
-<script>
-    setTimeout(function() {
-        var errorMessage = document.getElementById('error-message');
-        if (errorMessage) {
-            errorMessage.style.display = 'none';
-        }
-    }, 3000);
-</script>
 {% endblock %}

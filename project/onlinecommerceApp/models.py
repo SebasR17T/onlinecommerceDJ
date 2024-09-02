@@ -221,6 +221,9 @@ class Inventario(models.Model):
         managed = True
         db_table = 'inventario'
 
+    def __str__(self):
+        return self.id_tienda.nombre
+
 
 class ProductoHasPedido(models.Model):
     id =  models.AutoField(primary_key=True)
@@ -297,6 +300,14 @@ class Solicitud(models.Model):
         db_table = 'solicitud'
 
 
+class Reseña (models.Model):
+    id_tienda = models.ForeignKey(Tienda, on_delete=models.CASCADE, related_name='reseñas')
+    id_usuario_creacion = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    comentario = models.CharField(max_length=1000)
+    calificacion = models.PositiveIntegerField(choices=[(i, i) for i in range(1, 6)] , null=True)  # Calificación de 1 a 5 estrellas
+
+    def __str__(self):
+        return f'Reseña de {self.id_usuario_creacion} para {self.id_tienda}'
 
 
 

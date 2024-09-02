@@ -3,7 +3,7 @@
 from django.contrib import admin
 from .models import Usuario, CategoriaTienda, Solicitud, TipoSolicitud, ProductoHasVenta, Ventas, ProductoHasPedido, \
     Inventario, InteraccionSolicitud, DetalleFisico, DetalleDomicilio, Pagos, MetodoPago, Pedido, Carrito, Tienda, \
-    Producto
+    Producto, Reseña
 from .models import CategoriaProducto
 
 class UsuarioAdmin(admin.ModelAdmin):
@@ -26,6 +26,7 @@ admin.site.register(Ventas)
 admin.site.register(ProductoHasVenta)
 admin.site.register(Solicitud)
 admin.site.register(TipoSolicitud)
+admin.site.register(Reseña)
 
 
 

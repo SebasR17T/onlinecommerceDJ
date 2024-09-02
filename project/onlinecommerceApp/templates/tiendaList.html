@@ -6,9 +6,10 @@
 {% block content %}
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary">Lista de Tiendas</h2>
+<h2 style="font-family: 'Verdana', sans-serif; color: black; font-weight: bold;">Lista de Tiendas</h2>
+
     {% if user|is_in_group:"Tendero" %}
-        <a href="{% url 'crear_tienda' %}" class="btn btn-success">Crear Tienda</a>
+        <a href="{% url 'crear_tienda' %}" class="btn btn-info mb-2" style=" font-family: 'Verdana', sans-serif; background-color: #fcbf4f; border-color: orange; margin-left:10px; margin-top:10px;">Crear Tienda</a>
     {% endif %}
 
     </div>
@@ -27,7 +28,9 @@
                 <div class="card-body">
 
 
-                    <h5 class="card-title">{{ tienda.nombre }}</h5>
+<h5 class="card-title" style="font-family: 'Trebuchet MS', sans-serif; color: black; font-weight: bold; font-size: 36px; text-align: left;">
+  {{ tienda.nombre }}
+</h5>
                     <p class="card-text"><strong>Teléfono:</strong> {{ tienda.telefono }}</p>
                     <p class="card-text"><strong>Descripción:</strong> {{ tienda.descripcion }}</p>
                     <p class="card-text"><strong>Correo:</strong> {{ tienda.correo }}</p>
@@ -36,12 +39,12 @@
 
                     <div class="d-flex flex-wrap align-items-center mt-4">
                         <!-- Botón para ver detalles de la tienda -->
-                        <a href="{% url 'detalle_tienda' tienda.id_tienda %}" class="btn btn-primary me-3 mb-2">Ver Detalles</a>
+                        <a href="{% url 'detalle_tienda' tienda.id_tienda %}" class="btn btn-info" style="font-family: 'Verdana', sans-serif; background-color: #4a90e2; color: white;">Ver Detalles</a>
 
                         <!-- Botones para editar y eliminar la tienda si el usuario tiene permisos -->
                         {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian" %}
-                            <a href="{% url 'editar_tienda' tienda.id_tienda %}" class="btn btn-success me-3 mb-2">Editar mi tienda</a>
-                            <a href="{% url 'eliminar_tienda' tienda.id_tienda %}" class="btn btn-danger mb-2">Eliminar mi tienda</a>
+                            <a href="{% url 'editar_tienda' tienda.id_tienda %}" class="btn btn-success " style=" font-family: 'Verdana', sans-serif; margin-left:10px; margin-right:10px">Editar mi tienda</a>
+                            <a href="{% url 'eliminar_tienda' tienda.id_tienda %}" class="btn btn-danger " style=" font-family: 'Verdana', sans-serif; margin-top:4px" >Eliminar mi tienda</a>
                         {% endif %}
                     </div>
 

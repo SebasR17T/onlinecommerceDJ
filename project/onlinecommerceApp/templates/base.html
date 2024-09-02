@@ -24,64 +24,81 @@
 
 </head>
 <body>
+<nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: white; border-bottom: 2px solid white;">
+  <div class="container-fluid">
+    <span class="navbar-text mx-auto" style="font-size: 18px; font-weight: bold; color: #333; font-family: 'Arial', sans-serif;">
+🌟 ¡Compra local y aprovecha ofertas exclusivas en tu barrio! 🌟 ¡Apoya a tus vecinos y encuentra productos únicos! 🛍️💛
 
-<nav class="navbar navbar-expand custom-navbar">
+    </span>
+  </div>
+</nav>
+
+
+<!-- Verifica si no estás en la página de inicio -->
+<ul class="nav nav-tabs" style="background-color:">
+  {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian" %}
+  <li class="nav-item">
+    <a class="nav-link custom-nav-link active"  aria-current="page" href="{% url 'dashboard' %} "><strong>Dashboard</strong></a>
+  </li>
+  {% endif %}
+  <li class="nav-item">
+    <a class="nav-link custom-nav-link active" href="{% url 'listar_producto' %}"><strong>Productos</strong></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link custom-nav-link active" href="{% url 'listar_tienda' %}"><strong>Tiendas</strong></a>
+  </li>
+</ul>
+
+
+
+   <nav class="navbar navbar-expand custom-navbar" style="height: 60px; background-color: white;">
   <div class="container-fluid">
     <!-- Logo -->
-    <div class="navbar-brand">
-      <img src="{% static 'img/Logo.png' %}" width="60px" height="50px" alt="Logo">
-    </div>
+    <a class="navbar-brand d-flex align-items-center" href="{% url 'inicio' %}" style="height: 100%;">
+      <img src="{% static 'img/Logo.png' %}" alt="Logo" style="height: 100%; max-height: 48px;">
+    </a>
 
     <!-- Navbar para usuarios autenticados -->
     {% if user.is_authenticated %}
-      <ul class="navbar-nav d-flex flex-row">
-
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'inicio' %}">Inicio</a>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'logout' %}">Logout</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'carrito' %}">Carrito</a>
-        </li>
-      </ul>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" href="{% url 'logout' %}" style="height: 100%;">
+          <img src="{% static 'img/logout.png' %}" alt="Logout" style="height: 40px;">
+          <span style="margin-left: 8px; font-size: 15px; font-family: Arial, sans-serif; font-weight: bold; color: black;"></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" href="{% url 'carrito' %}" style="height: 100%;">
+          <img src="{% static 'img/carritooo.png' %}" alt="Carro" style="height: 45px;">
+          <span style="margin-left: 8px; font-size: 15px; font-family: Arial, sans-serif; font-weight: bold; color: black;"></span>
+        </a>
+      </li>
+    </ul>
     {% endif %}
 
     <!-- Navbar para usuarios no autenticados -->
     {% if not user.is_authenticated %}
-      <ul class="navbar-nav d-flex flex-row">
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'inicio' %}">Inicio</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'register' %}">Registrarse</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link custom-nav-link active" href="{% url 'login' %}">Login</a>
-        </li>
-      </ul>
+    <ul class="navbar-nav ms-auto">
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" href="{% url 'register' %}" style="height: 100%; padding: 0 20px;">
+          <img src="{% static 'img/registro.png' %}" alt="Registrarse" style="height: 30px;">
+          <span style="margin-left: 8px; font-size: 15px; font-family: Arial, sans-serif; font-weight: bold; color: black;">Registrarse</span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link d-flex align-items-center justify-content-center" href="{% url 'login' %}" style="height: 100%; padding: 0 20px;">
+          <img src="{% static 'img/login.png' %}" alt="Login" style="height: 30px;">
+          <span style="margin-left: 8px; font-size: 15px; font-family: Arial, sans-serif; font-weight: bold; color: black;">Iniciar sesión</span>
+        </a>
+      </li>
+    </ul>
     {% endif %}
   </div>
 </nav>
 
-<ul class="nav nav-tabs">
-  {% if user.is_authenticated and user == tienda.id_usuario or user.username == "sebastian" %}
-  <li class="nav-item">
-      <a class="nav-link custom-nav-link active" aria-current="page" href="{% url 'dashboard' %}">Dashboard</a>
-  </li>
-  {% endif %}
 
 
-  <li class="nav-item">
-      <a class="nav-link custom-nav-link active" href="{% url 'listar_producto' %}">Productos</a>
-  </li>
-  <li class="nav-item">
-      <a class="nav-link custom-nav-link active" href="{% url 'listar_tienda' %}">Tiendas</a>
-  </li>
 
-</ul>
 
 
         {% block content %}
@@ -95,6 +112,8 @@
             <p class="text-center">Calle Principal 123, Ciudad, Estado</p>
             <p class="text-center">Teléfono: 123-456-7890</p>
             <p class="text-center">Correo electrónico: info@onlinecommerce.com</p>
+            <a href="{% url 'about'%}" class="text-center" >Acerca de nosotros</a>
+
         </div>
  </footer>
 
