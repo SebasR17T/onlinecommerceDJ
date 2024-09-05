@@ -7,8 +7,8 @@ from .models import Usuario, CategoriaTienda, Solicitud, TipoSolicitud, Producto
 from .models import CategoriaProducto
 
 class UsuarioAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email', 'apellido', 'telefono', 'fecha_nacimiento', 'cedula', 'tipo_cedula', 'genero', 'is_staff', 'is_active')
-    search_fields = ('username', 'email', 'apellido')
+    list_display = ('username', 'email', 'telefono', 'fecha_nacimiento', 'cedula', 'tipo_cedula', 'genero', 'is_staff', 'is_active')
+    search_fields = ('username', 'email')
 
 admin.site.register(Usuario, UsuarioAdmin)
 admin.site.register(Producto)

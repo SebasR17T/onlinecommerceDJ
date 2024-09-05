@@ -18,7 +18,6 @@ from django.contrib.auth.models import AbstractUser
 
 class Usuario(AbstractUser):
 
-    apellido = models.CharField(max_length=200)
     estado = models.IntegerField(blank=True, null=True)
     deleted = models.BooleanField(default=False)
     fecha_creacion = models.DateField(auto_now_add=True, null=True)

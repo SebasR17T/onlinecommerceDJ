@@ -15,15 +15,23 @@
                     {{ form.username|as_crispy_field }}
                 </div>
                 <div class="col-md-6">
-                    {{ form.apellido|as_crispy_field }}
+                    {{ form.email|as_crispy_field }}
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    {{ form.email|as_crispy_field }}
+                    {{ form.first_name|as_crispy_field }}
                 </div>
                 <div class="col-md-6">
-                    {{ form.role|as_crispy_field }}
+                    {{ form.last_name|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    {{ form.fecha_nacimiento|as_crispy_field }}
+                </div>
+                <div class="col-md-6">
+                    {{ form.telefono|as_crispy_field }}
                 </div>
             </div>
             <div class="row">
@@ -32,6 +40,11 @@
                 </div>
                 <div class="col-md-6">
                     {{ form.password2|as_crispy_field }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    {{ form.role|as_crispy_field }}
                 </div>
             </div>
             <button type="submit" class="btn btn-primary btn-block mt-3">Registrarse</button>

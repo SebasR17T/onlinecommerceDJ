@@ -55,10 +55,8 @@ def inicioView(request):
     else:
         nombre_usuario = "Invitado"
 
-    # Selecciona todos los productos y los ordena aleatoriamente, luego selecciona un subconjunto
     productos = list(Producto.objects.all())
-    productos_aleatorios = random.sample(productos, min(len(productos), 5))  # Selecciona 5 productos aleatorios
-
+    productos_aleatorios = random.sample(productos, min(len(productos), 5))
     context = {
         'productos': productos_aleatorios,
         'nombre_usuario': nombre_usuario,
@@ -67,7 +65,7 @@ def inicioView(request):
     return render(request, 'inicio.html', context)
 
 def login_view(request):
-    error_message = None  # Inicializa el mensaje de error como None
+    error_message = None
     if request.method == 'POST':
         form = LoginForm(request, data=request.POST)
         if form.is_valid():
@@ -76,19 +74,21 @@ def login_view(request):
             if user is not None:
                 # Inicia sesión al usuario
                 auth_login(request, user)
-                # Redirige a la página de inicio después del login
                 return redirect('inicio')
-        # Solo se establece el mensaje de error si el POST es inválido
         error_message = "Nombre de usuario o contraseña incorrectos."
     else:
         form = LoginForm()
-        error_message = None  # Inicializa el mensaje de error como None
+        error_message = None
     # Renderiza la plantilla 'login.html' pasando el formulario y el mensaje de error como contexto
     return render(request, 'login.html', {'form': form, 'error_message': error_message})
+
+
 
 def logoutView (request):
     logout(request)
     return redirect('inicio')
+
+
 
 class ProductUpdateView(UpdateView):
     model = Producto
@@ -120,8 +120,9 @@ class ProductUpdateView(UpdateView):
                     cantidad=cantidad_inventario,
                     id_usuario_creacion=self.request.user
                 )
-
         return response
+
+
 
 class ProductCreateView(TenderoRequiredMixin, CreateView):
     model = Producto
@@ -132,24 +133,20 @@ class ProductCreateView(TenderoRequiredMixin, CreateView):
     def form_valid(self, form):
         # Asignar el usuario actual al producto
         form.instance.id_usuario_creacion = self.request.user
-
-        # Guardar el producto primero antes de crear una entrada en el inventario
         response = super().form_valid(form)
-
         # Obtener la cantidad de inventario del formulario
         cantidad_inventario = form.cleaned_data['cantidad_inventario']
-
         # Seleccionar la primera tienda asociada al usuario actual
         tienda = Tienda.objects.filter(id_usuario=self.request.user).first()
         if not tienda:
             # Manejar el caso en el que no hay tiendas asociadas al usuario
-            return HttpResponse('Usuario no asociado con una tienda')  # Redirige a una página de error o muestra un mensaje
+            return HttpResponse('Usuario no asociado con una tienda')
 
         # Crear una entrada en el inventario para el nuevo producto
         Inventario.objects.create(
             id_tienda=tienda,
-            id_producto=form.instance,  # El producto ya está guardado en este punto
-            cantidad=cantidad_inventario,  # Usar la cantidad proporcionada por el usuario
+            id_producto=form.instance,
+            cantidad=cantidad_inventario,
             id_usuario_creacion=self.request.user
         )
 
@@ -157,7 +154,7 @@ class ProductCreateView(TenderoRequiredMixin, CreateView):
 
 class ProductListView(ListView):
     model = Producto
-    template_name = 'product_list.html'  # Nombre del archivo HTML para renderizar la lista
+    template_name = 'product_list.html'
     context_object_name = 'productos'  # Nombre del contexto para acceder a los productos en la plantilla
     def get_queryset(self):
         queryset = Producto.objects.all()

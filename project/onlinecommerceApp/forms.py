@@ -17,9 +17,11 @@ class CrearUsuarioForm(UserCreationForm):
 
     class Meta:
         model = Usuario
-        fields = ['username', 'email', 'password1', 'password2', 'role', 'apellido']
-
-
+        fields = ['username', 'email', 'password1', 'password2', 'role', 'telefono', 'fecha_nacimiento', 'first_name',
+                  'last_name']
+        widgets = {
+            'fecha_nacimiento': forms.DateInput(attrs={'type': 'date'}),
+        }
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
@@ -32,6 +34,8 @@ class LoginForm(AuthenticationForm):
         widget=forms.PasswordInput
     )
 
+
+
 class ProductForm(forms.ModelForm):
     # Agregar un campo para la cantidad del inventario
     cantidad_inventario = forms.IntegerField(min_value=0, label='Cantidad en Inventario', required=True)
@@ -39,7 +43,6 @@ class ProductForm(forms.ModelForm):
     class Meta:
         model = Producto
         fields = ['nombre_producto', 'descripcion', 'precio', 'fecha_vencimiento', 'id_categoria_producto', 'imagen', 'cantidad_inventario']
-
 
     def save(self, commit=True):
         # Sobrescribir el método save para manejar la cantidad de inventario
@@ -50,10 +53,12 @@ class ProductForm(forms.ModelForm):
 
 
 
+
 class TiendaForm(forms.ModelForm):
     class Meta:
         model = Tienda
         fields = ['nombre', 'telefono', 'descripcion', 'correo', 'instagram', 'id_categoria', 'id_direccion', 'imagen']
+
 
 
 
@@ -63,10 +68,14 @@ class InventarioForm(forms.ModelForm):
         fields = ['id_producto', 'cantidad']
 
 
+
+
 class SolicitudForm(forms.ModelForm):
     class Meta:
         model = Solicitud
         fields = ['nombre','correo', 'telefono', 'asunto','descripcion', 'id_tipo_solicitud']
+
+
 
 
 class ReseñaForm(forms.ModelForm):
