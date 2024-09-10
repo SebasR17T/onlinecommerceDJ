@@ -3,6 +3,7 @@ from datetime import date
 import csv  # Añade esta línea para importar el módulo csv
 from django.contrib.auth import login, logout
 from django.contrib.auth.models import Group
+from django.contrib.sessions.models import Session
 from django.http import Http404, HttpResponse, JsonResponse, HttpResponseRedirect
 from django.urls import reverse_lazy, reverse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -13,6 +14,8 @@ from .models import Producto, Tienda, Inventario, Carrito, Usuario, Solicitud, R
 from django.views.generic import TemplateView
 from django.views.generic import CreateView, ListView, UpdateView, DeleteView, DetailView
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 class TenderoRequiredMixin(UserPassesTestMixin):
@@ -72,17 +75,32 @@ def login_view(request):
             # Autentica al usuario con el nombre de usuario y la contraseña proporcionados
             user = form.get_user()
             if user is not None:
-                # Inicia sesión al usuario
+                # Verificar si el usuario ya tiene una sesión activa
+                if user.session_key:
+                    try:
+                        # Cerrar la sesión activa anterior
+                        old_session = Session.objects.get(session_key=user.session_key)
+                        old_session.delete()
+                    except Session.DoesNotExist:
+                        pass
+
+                # Iniciar la nueva sesión para el usuario
                 auth_login(request, user)
+
+                # Guardar la nueva session_key en el usuario
+                user.session_key = request.session.session_key
+                user.save()
+
+                # Redirigir al usuario a la página de inicio
                 return redirect('inicio')
+
         error_message = "Nombre de usuario o contraseña incorrectos."
     else:
         form = LoginForm()
         error_message = None
+
     # Renderiza la plantilla 'login.html' pasando el formulario y el mensaje de error como contexto
     return render(request, 'login.html', {'form': form, 'error_message': error_message})
-
-
 
 def logoutView (request):
     logout(request)
@@ -90,7 +108,7 @@ def logoutView (request):
 
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, TenderoRequiredMixin, UpdateView):
     model = Producto
     form_class = ProductForm
     template_name = 'productUpdate.html'
@@ -175,14 +193,14 @@ class ProductDetailView(DetailView):
     template_name = 'productDetail.html'
 
 
-class ProductDeleteView(TenderoRequiredMixin, DeleteView):
+class ProductDeleteView(LoginRequiredMixin, TenderoRequiredMixin, DeleteView):
     model = Producto
     template_name = 'productDelete.html'
     success_url = reverse_lazy('listar_producto')
 
 
 
-class TiendaCreateView(TenderoRequiredMixin, CreateView):
+class TiendaCreateView(LoginRequiredMixin, TenderoRequiredMixin, CreateView):
     model = Tienda
     form_class = TiendaForm
     template_name = 'tiendaCreate.html'
@@ -220,7 +238,7 @@ class TiendaDetailView(DetailView):
         return context
 
 
-class TiendaUpdateView(TenderoRequiredMixin, UpdateView):
+class TiendaUpdateView(LoginRequiredMixin, TenderoRequiredMixin, UpdateView):
     model = Tienda
     form_class = TiendaForm
     template_name = 'tiendaUpdate.html'
@@ -230,7 +248,7 @@ class TiendaUpdateView(TenderoRequiredMixin, UpdateView):
         # Puedes realizar acciones adicionales aquí si es necesario
         return super().form_valid(form)
 
-class TiendaDeleteView(TenderoRequiredMixin, DeleteView):
+class TiendaDeleteView(LoginRequiredMixin, TenderoRequiredMixin, DeleteView):
     model = Tienda
     template_name = 'tiendaDelete.html'
     success_url = reverse_lazy('listar_tienda')

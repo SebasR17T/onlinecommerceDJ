@@ -55,6 +55,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'onlinecommerceApp.middleware.SingleSessionMiddleware',
+
 ]
 
 ROOT_URLCONF = 'project.urls'
@@ -63,6 +65,10 @@ ROOT_URLCONF = 'project.urls'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'  # o la URL de tu vista de login
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True  # Cierra la sesión al cerrar el navegador
+
+
 
 
 AUTH_USER_MODEL = 'onlinecommerceApp.Usuario'
