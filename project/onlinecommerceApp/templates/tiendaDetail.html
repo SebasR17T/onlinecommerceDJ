@@ -18,7 +18,9 @@
             <a href="{% url 'listarSolicitudes' tienda_id=tienda.id_tienda %}" class="btn btn-info mb-2" style=" font-family: 'Verdana', sans-serif; background-color: orange; border-color: orange; margin-left:10px; margin-top:10px;">Ver Solicitudes</a>
             {% endif %}
 
+            {% if user.is_authenticated and user != tienda.id_usuario %}
             <a href="{% url 'reseña' tienda_id=tienda.id_tienda %}" class="btn btn-info mb-2" style=" font-family: 'Verdana', sans-serif; background-color: orange; border-color: orange; margin-left:10px; margin-top:10px;">Agregar Reseña</a>
+            {% endif %}
 
         </div>
 
@@ -36,6 +38,8 @@
                 <p class="card-text"><strong>Descripción:</strong> {{ tienda.descripcion }}</p>
                 <p class="card-text"><strong>Teléfono:</strong> {{ tienda.telefono }}</p>
                 <p class="card-text"><strong>Correo:</strong> {{ tienda.correo }}</p>
+                <p class="card-text"><strong>Direccion:</strong> {{ tienda.id_direccion }}</p>
+
                 <p class="card-text"><strong>Instagram:</strong> <a href="{{ tienda.instagram }}" target="_blank">{{ tienda.instagram }}</a></p>
                 <p class="card-text"><strong>Fecha de Creación:</strong> {{ tienda.fecha_creacion }}</p>
 
