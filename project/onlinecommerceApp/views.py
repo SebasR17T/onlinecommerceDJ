@@ -37,9 +37,9 @@ def register(request):
             role = form.cleaned_data.get('role') # Solo asigna el usuario al grupo si se eligió un rol
             if role:
                 if role == 'comprador':
-                    group = Group.objects.get(name='Comprador')
+                    group, _ = Group.objects.get_or_create(name='Comprador')
                 elif role == 'tendero':
-                    group = Group.objects.get(name='Tendero')
+                    group, _ = Group.objects.get_or_create(name='Tendero')
                 user.groups.add(group) # Añade el usuario al grupo correspondiente
             login(request, user) # Inicia sesión al usuario recién registrado
             return redirect('inicio')
